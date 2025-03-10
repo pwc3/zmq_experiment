@@ -1,24 +1,41 @@
 #include "../include/publisher.hpp"
-#include <thread>
-#include <chrono>
+
+std::vector<float> generate_samples(int i)
+{
+    std::vector<float> samples;
+    for (int f = i * 10; f < (i + 1) * 10; f++)
+    {
+        samples.push_back(static_cast<float>(f));
+    }
+    return samples;
+}
 
 int main()
 {
     Publisher pub;
-    std::cout << "C++ Publisher started..." << std::endl;
+    std::cout << "Created publisher" << std::endl;
 
-    pub.publish({MessageType::START, {1.1f, 2.2f, 3.3f}});
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    for (int i = 0; i < 10; i++)
+    {
+        MessageType type;
+        if (i == 0)
+        {
+            type = MessageType::START;
+        }
+        else if (i == 9)
+        {
+            type = MessageType::END;
+        }
+        else
+        {
+            type = MessageType::CONTINUE;
+        }
 
-    pub.publish({MessageType::CONTINUE, {4.4f, 5.5f}});
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << "Publishing message " << i << std::endl;
+        pub.publish({type, generate_samples(i)});
+        std::cout << "Published message " << i << std::endl;
+    }
 
-    pub.publish({MessageType::END, {6.6f}});
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-
-    pub.publish({MessageType::FULL, {}});
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-
-    std::cout << "C++ Publisher finished sending data." << std::endl;
+    std::cout << "Done" << std::endl;
     return 0;
 }

@@ -27,6 +27,8 @@ async def main():
         await pub.publish(message)
         log.info("Published message")
 
+    log.info("Done")
+
 
 if __name__ == "__main__":
     logging.basicConfig(
