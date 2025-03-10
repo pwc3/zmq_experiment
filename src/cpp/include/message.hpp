@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdint>
+#include <cstring>
+#include <stdexcept>
 #include <vector>
 
 // MessageType Enum (Matches Python)

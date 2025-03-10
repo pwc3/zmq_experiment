@@ -307,5 +307,5 @@ pyzmq = "*"
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.12"
-content-hash = "3998cf81bc942c3524dd1bab643a22b28116da6a05e7f00bcd579a63aa2c218a"
+python-versions = ">=3.11"
+content-hash = "5ba83290af47e87cce7f77de0c115b59f8af46c9aeee0a5c3bd789de7257d222"
