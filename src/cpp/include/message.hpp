@@ -2,6 +2,8 @@
 
 #include <cstdint>
 #include <cstring>
+#include <iomanip>
+#include <iostream>
 #include <stdexcept>
 #include <vector>
 
@@ -23,13 +25,41 @@ struct Message
     // Serialize Message to Binary Format
     std::vector<uint8_t> serialize() const
     {
+        // Calculate the total buffer size
         uint64_t count = samples.size();
-        size_t size = 1 + sizeof(uint64_t) + count * sizeof(float);
-        std::vector<uint8_t> buffer(size);
+        size_t total_size = sizeof(message_type) + sizeof(count) + count * sizeof(float);
 
-        buffer[0] = static_cast<uint8_t>(message_type);
-        std::memcpy(buffer.data() + 1, &count, sizeof(uint64_t));
-        std::memcpy(buffer.data() + 1 + sizeof(uint64_t), samples.data(), count * sizeof(float));
+        // Create a buffer to hold the entire message.
+        std::vector<uint8_t> buffer(total_size);
+        size_t offset = 0;
+
+        // Copy the type
+        std::memcpy(buffer.data() + offset, &message_type, sizeof(MessageType));
+        offset += sizeof(message_type);
+
+        // Copy the count
+        std::memcpy(buffer.data() + offset, &count, sizeof(uint64_t));
+        offset += sizeof(count);
+
+        // Copy the samples
+        if (count > 0)
+        {
+            std::memcpy(buffer.data() + offset, samples.data(), count * sizeof(float));
+        }
+
+        std::cout << "Serializing message: type=" << static_cast<int>(message_type) << " count=" << count << " samples=";
+        for (const auto &sample : samples)
+        {
+            std::cout << sample << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "Message serialized as: ";
+        for (const auto &byte : buffer)
+        {
+            std::cout << "\\x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(byte);
+        }
+        std::cout << std::endl;
 
         return buffer;
     }
