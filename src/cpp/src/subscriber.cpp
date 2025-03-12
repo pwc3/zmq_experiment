@@ -1,30 +1,40 @@
-#include "../include/subscriber.hpp"
+#include "Subscriber.hpp"
 
-int main()
+#include <string>
+
+Subscriber::Subscriber() : context(1), socket(context, zmq::socket_type::pull)
 {
-    Subscriber sub;
-    std::cout << "Created subscriber" << std::endl;
+    socket.connect("tcp://localhost:5555"); // Connects to Python Publisher
+}
 
+Subscriber::~Subscriber()
+{
+    socket.close();
+}
+
+void Subscriber::subscribe(const std::function<bool(const AudioPacket &)> &callback)
+{
     while (true)
     {
-        Message message = sub.subscribe();
-        std::cout << "Received: type=" << static_cast<int>(message.message_type)
-                  << ", count=" << message.samples.size()
-                  << ", values={";
-
-        for (size_t i = 0; i < message.samples.size(); ++i)
+        AudioPacket packet = receive();
+        if (!callback(packet))
         {
-            std::cout << message.samples[i] << (i < message.samples.size() - 1 ? ", " : "");
-        }
-
-        std::cout << "}" << std::endl;
-
-        if (message.message_type == MessageType::END)
-        {
-            std::cout << "Received END message, stopping" << std::endl;
             break;
         }
     }
+}
 
-    return 0;
+AudioPacket Subscriber::receive()
+{
+    zmq::message_t zmq_message;
+    auto result = socket.recv(zmq_message, zmq::recv_flags::none);
+
+    if (!result)
+    {
+        throw std::runtime_error("Failed to receive message from socket");
+    }
+
+    auto buffer = static_cast<uint8_t *>(zmq_message.data());
+    auto string = std::string(buffer, buffer + zmq_message.size());
+    return AudioPacket::deserialize(string);
 }

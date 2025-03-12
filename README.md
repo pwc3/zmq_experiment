@@ -9,13 +9,21 @@ The following walks through building and running the C++ code.
 On macOS:
 
 ```bash
-brew install cmake pkg-config zeromq cppzmq
+brew install cmake pkg-config zeromq cppzmq protobuf
 ```
 
 On Raspberry Pi:
 
 ```bash
 sudo apt update && sudo apt install -y cmake pkg-config libzmq3-dev libczmq-dev
+```
+
+### Compile protobuf
+
+From the root of the project, run:
+
+```bash
+make -C src/protobuf
 ```
 
 ### Build

@@ -16,5 +16,8 @@
   },
   "isort.args": ["--profile", "black"],
   "python.analysis.autoFormatStrings": true,
-  "python.analysis.autoImportCompletions": true
+  "python.analysis.autoImportCompletions": true,
+  "files.associations": {
+    "format": "cpp"
+  }
 }

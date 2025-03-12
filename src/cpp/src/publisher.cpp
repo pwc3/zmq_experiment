@@ -1,41 +1,21 @@
-#include "../include/publisher.hpp"
+#include "Publisher.hpp"
 
-std::vector<float> generate_samples(int i)
+#include <filesystem>
+#include <ostream>
+
+Publisher::Publisher() : context(1), socket(context, zmq::socket_type::push)
 {
-    std::vector<float> samples;
-    for (int f = i * 10; f < (i + 1) * 10; f++)
-    {
-        samples.push_back(static_cast<float>(f));
-    }
-    return samples;
+    socket.bind("tcp://*:5555");
 }
 
-int main()
+Publisher::~Publisher()
 {
-    Publisher pub;
-    std::cout << "Created publisher" << std::endl;
+    socket.close();
+}
 
-    for (int i = 0; i < 10; i++)
-    {
-        MessageType type;
-        if (i == 0)
-        {
-            type = MessageType::START;
-        }
-        else if (i == 9)
-        {
-            type = MessageType::END;
-        }
-        else
-        {
-            type = MessageType::CONTINUE;
-        }
-
-        std::cout << "Publishing message " << i << std::endl;
-        pub.publish({type, generate_samples(i)});
-        std::cout << "Published message " << i << std::endl;
-    }
-
-    std::cout << "Done" << std::endl;
-    return 0;
+void Publisher::publish(const AudioPacket &packet)
+{
+    auto serialized = packet.serialize();
+    zmq::message_t zmq_message(serialized.data(), serialized.size());
+    socket.send(zmq_message, zmq::send_flags::none);
 }
