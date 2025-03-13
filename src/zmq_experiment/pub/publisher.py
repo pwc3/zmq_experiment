@@ -1,7 +1,7 @@
 import zmq
 import zmq.asyncio
 
-from ..message import Message
+from ..audio_packet import AudioPacket
 
 
 class Publisher:
@@ -13,5 +13,5 @@ class Publisher:
         self._socket = self._context.socket(zmq.PUSH)
         self._socket.bind("tcp://*:5555")
 
-    async def publish(self, message: Message):
-        await self._socket.send(message.serialize())
+    async def publish(self, packet: AudioPacket):
+        await self._socket.send(packet.serialize())

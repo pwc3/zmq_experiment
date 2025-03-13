@@ -1,4 +1,4 @@
-from zmq_experiment.message import Message, MessageType
+from zmq_experiment.audio_packet import Message, MessageType
 
 
 def test_message_serialize():
