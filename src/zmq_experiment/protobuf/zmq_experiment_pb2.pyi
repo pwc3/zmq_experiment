@@ -6,9 +6,9 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Optional as _Op
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class PBAudioPacket(_message.Message):
-    __slots__ = ("wav_filename", "samples")
-    WAV_FILENAME_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["samples", "wav_filename"]
     SAMPLES_FIELD_NUMBER: _ClassVar[int]
-    wav_filename: str
+    WAV_FILENAME_FIELD_NUMBER: _ClassVar[int]
     samples: _containers.RepeatedScalarFieldContainer[float]
+    wav_filename: str
     def __init__(self, wav_filename: _Optional[str] = ..., samples: _Optional[_Iterable[float]] = ...) -> None: ...

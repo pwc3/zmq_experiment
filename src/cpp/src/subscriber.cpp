@@ -35,6 +35,6 @@ AudioPacket Subscriber::receive()
     }
 
     auto buffer = static_cast<uint8_t *>(zmq_message.data());
-    auto string = std::string(buffer, buffer + zmq_message.size());
-    return AudioPacket::deserialize(string);
+    auto data = std::vector(buffer, buffer + zmq_message.size());
+    return AudioPacket::deserialize(data);
 }

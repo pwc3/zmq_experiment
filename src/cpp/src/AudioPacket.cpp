@@ -1,32 +1,34 @@
 #include <stdexcept>
 
 #include "AudioPacket.hpp"
-#include "zmq_experiment.pb.h"
+#include "zmq_experiment.pb-c.h"
 
-std::string AudioPacket::serialize() const
+std::vector<uint8_t> AudioPacket::serialize() const
 {
-    PBAudioPacket packet;
-    packet.set_wav_filename(wav_file.string());
-    packet.mutable_samples()->Add(samples.begin(), samples.end());
+    PBAudioPacket packet = PBAUDIO_PACKET__INIT;
+    packet.wav_filename = const_cast<char *>(wav_file.c_str());
+    packet.n_samples = samples.size();
+    packet.samples = const_cast<float *>(samples.data());
 
-    std::string serialized;
-    if (!packet.SerializeToString(&serialized))
-    {
-        throw std::runtime_error("Failed to serialize AudioPacket");
-    }
+    auto length = pbaudio_packet__get_packed_size(&packet);
+    std::vector<uint8_t> buffer(length);
+    pbaudio_packet__pack(&packet, buffer.data());
 
-    return serialized;
+    return buffer;
 }
 
-AudioPacket AudioPacket::deserialize(const std::string &data)
+AudioPacket AudioPacket::deserialize(const std::vector<uint8_t> &data)
 {
-    PBAudioPacket packet;
-    if (!packet.ParseFromString(data))
+    PBAudioPacket *packet = pbaudio_packet__unpack(nullptr, data.size(), data.data());
+    if (packet == nullptr)
     {
-        throw std::runtime_error("Failed to parse AudioPacket");
+        throw std::runtime_error("Failed to deserialize AudioPacket");
     }
 
-    return AudioPacket(
-        packet.wav_filename(),
-        std::vector<float>(packet.samples().begin(), packet.samples().end()));
+    AudioPacket audio_packet(
+        std::string(packet->wav_filename),
+        std::vector<float>(packet->samples, packet->samples + packet->n_samples));
+
+    pbaudio_packet__free_unpacked(packet, nullptr);
+    return audio_packet;
 }

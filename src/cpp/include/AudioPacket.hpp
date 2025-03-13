@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <cstdint>
 #include <vector>
 
 // Message Struct
@@ -13,8 +14,8 @@ public:
     const std::filesystem::path &get_wav_file() const { return wav_file; }
     const std::vector<float> &get_samples() const { return samples; }
 
-    std::string serialize() const;
-    static AudioPacket deserialize(const std::string &data);
+    std::vector<uint8_t> serialize() const;
+    static AudioPacket deserialize(const std::vector<uint8_t> &data);
 
 private:
     std::filesystem::path wav_file;
