@@ -29,9 +29,7 @@ make -C src/protobuf
 ### Build
 
 ```bash
-mkdir -p build && cd build
-cmake ..
-make
+mkdir -p build && cd build && cmake .. && make ; cd ..
 ```
 
 ### Run
@@ -39,13 +37,13 @@ make
 To start the publisher:
 
 ```bash
-build/bin/publisher
+build/bin/zmq_experiment pub
 ```
 
 To start the subscriber:
 
 ```bash
-build/bin/subscriber
+build/bin/zmq_experiment sub
 ```
 
 ## Python
