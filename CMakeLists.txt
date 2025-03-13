@@ -5,7 +5,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Find ZeroMQ
 find_package(PkgConfig REQUIRED)
+find_package(absl RE)
 pkg_check_modules(ZMQ REQUIRED libzmq)
+pkg_check_modules(Protobuf REQUIRED protobuf)
 
 # Platform-specific include paths
 if(APPLE)
@@ -21,7 +23,12 @@ endif()
 
 # Include and link directories
 include_directories(${ZMQ_INCLUDE_DIR})
+include_directories(${Protobuf_INCLUDE_DIRS})
+include_directories(${absl_INCLUDE_DIRS})
+
 link_directories(${ZMQ_LIBRARY_DIR})
+link_directories(${Protobuf_LIBRARY_DIRS})
+link_directories(${absl_LIBRARY_DIRS})
 
 # Add subdirectory for C++ source files
 add_subdirectory(src/cpp)

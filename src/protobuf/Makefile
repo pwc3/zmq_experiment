@@ -1,5 +1,6 @@
 PROTO_DIR = .
 CPP_OUT_DIR = ../cpp/protobuf
+C_OUT_DIR = ../c/protobuf
 PYTHON_OUT_DIR = ../zmq_experiment/protobuf
 PROTOC = protoc
 

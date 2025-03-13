@@ -15,7 +15,15 @@ brew install cmake pkg-config zeromq cppzmq protobuf
 On Raspberry Pi:
 
 ```bash
-sudo apt update && sudo apt install -y cmake pkg-config libzmq3-dev libczmq-dev
+sudo apt update && \
+sudo apt install -y \
+    cmake \
+    pkg-config \
+    libzmq3-dev \
+    libczmq-dev \
+    libprotobuf-dev \
+    protobuf-compiler \
+    libabsl-dev
 ```
 
 ### Compile protobuf
